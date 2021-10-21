@@ -124,18 +124,20 @@ export ROS_DISTRO=$ROS2_DISTRO
 source /opt/ros/\$ROS_DISTRO/setup.bash
 
 if [ \"\$ROS_DISTRO\" = \"$ROS1_DISTRO\" ]; then
-  source ~/catkin_ws/devel/setup.bash
   alias cw='cd ~/catkin_ws'
   alias cs='cd ~/catkin_ws/src'
   alias cm='cd ~/catkin_ws && catkin_make'
+  
+  source ~/catkin_ws/devel/setup.bash
   export ROS_MASTER_URI=http://localhost:11311
 fi
 
 if [ \"\$ROS_DISTRO\" = \"$ROS2_DISTRO\" ]; then
-  source ~/colcon_ws/install/setup.bash
   alias cw='cd ~/colcon_ws'
   alias cs='cd ~/colcon_ws/src'
   alias cb='cd ~/colcon_ws && colcon build --symlink-install'
+  
+  source ~/colcon_ws/install/setup.bash
   export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
   export ROS_DOMAIN_ID=101
 fi" >> $HOME/env.sh
