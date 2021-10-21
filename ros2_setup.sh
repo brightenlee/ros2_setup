@@ -115,8 +115,6 @@ if [ -f "/etc/ros/env.sh" ]; then
  sudo rm /etc/ros/env.sh
 fi
 
-echo -e "\nsource /etc/ros/env.sh" >> ~/.bashrc
-
 echo -e "#!/bin/bash
 
 # Please write the ROS environment variables here
