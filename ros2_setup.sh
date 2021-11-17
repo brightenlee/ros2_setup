@@ -36,6 +36,7 @@ helpFunction()
   exit 1
 }
 
+ROS1_DISTRO=""
 ROS2_DISTRO=""
 
 while getopts "r:h" opt
@@ -78,16 +79,16 @@ sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 
-# Install development tools and ROS2 tools
+# Install development tools and ROS2 tools
 sudo apt install -y build-essential cmake git libbullet-dev python3-colcon-common-extensions python3-flake8 python3-pip python3-pytest-cov python3-rosdep python3-setuptools python3-vcstool wget
 python3 -m pip install -U argcomplete flake8-blind-except flake8-builtins flake8-class-newline flake8-comprehensions flake8-deprecated flake8-docstrings flake8-import-order flake8-quotes pytest-repeat pytest-rerunfailures pytest
 
 
 # Install ROS2
 echo -e "\033[1;31mStarting ROS2 $ROS_DISTRO installation ...\033[0m"
-sudo apt update && sudo apt install -y ros-foxy-desktop python3-rosdep ros-$ROS_DISTRO-rqt* ros-$ROS_DISTRO-ros2-control ros-$ROS_DISTRO-ros2-controllers ros-$ROS_DISTRO-navigation2
+sudo apt update && sudo apt install -y ros-$ROS2_DISTRO-desktop python3-rosdep ros-$ROS2_DISTRO-rqt* ros-$ROS2_DISTRO-ros2-control ros-$ROS2_DISTRO-ros2-controllers ros-$ROS2_DISTRO-navigation2
 
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/$ROS2_DISTRO/setup.bash
 
 sudo rosdep init
 rosdep update
