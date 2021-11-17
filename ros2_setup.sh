@@ -85,7 +85,7 @@ python3 -m pip install -U argcomplete flake8-blind-except flake8-builtins flake8
 
 
 # Install ROS2
-echo -e "\033[1;31mStarting ROS2 $ROS_DISTRO installation ...\033[0m"
+echo -e "\033[1;31mStarting ROS2 $ROS2_DISTRO installation ...\033[0m"
 sudo apt update && sudo apt install -y ros-$ROS2_DISTRO-desktop python3-rosdep ros-$ROS2_DISTRO-rqt* ros-$ROS2_DISTRO-ros2-control ros-$ROS2_DISTRO-ros2-controllers ros-$ROS2_DISTRO-navigation2
 
 source /opt/ros/$ROS2_DISTRO/setup.bash
