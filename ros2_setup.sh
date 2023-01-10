@@ -31,7 +31,7 @@ helpFunction()
 {
   echo "Usage: ./ros2_setup -r <ros2 distro>"
   echo ""
-  echo -e "  -r <ros2 distro>\tfoxy"
+  echo -e "  -r <ros2 distro>\tfoxy, galactic"
   echo ""
   exit 1
 }
@@ -48,12 +48,12 @@ do
   esac
 done
 
-if [ "$ROS2_DISTRO" != "foxy" ]; then 
+if [ "$ROS2_DISTRO" != "foxy" ] && [ "$ROS_DISTRO" != "galactic" ]; then 
   echo -e "\033[1;31mInvalid ROS2 version.\033[0m"
   exit 1
 fi
 
-if [ "$ROS2_DISTRO" == "foxy" ]; then 
+if [ "$ROS2_DISTRO" == "foxy" ] || [ "$ROS_DISTRO" != "galactic" ]; then 
   ROS1_DISTRO="noetic"
 fi
 
@@ -62,7 +62,7 @@ fi
 echo -e "\033[1;31mStarting PC setup ...\033[0m"
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y ssh net-tools terminator chrony ntpdate curl vim git setserial
+sudo apt install -y ssh net-tools terminator chrony ntpdate curl vim git
 sudo ntpdate ntp.ubuntu.com
 
 
@@ -74,13 +74,14 @@ export LANG=en_US.UTF-8
 
 
 # Add the ROS2 apt repository
-sudo apt update && sudo apt install -y curl gnupg2 lsb-release
+sudo apt install software-properties-common
+sudo add-apt-repository universe
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 
 # Install development tools and ROS2 tools
-sudo apt install -y build-essential cmake git libbullet-dev python3-colcon-common-extensions python3-flake8 python3-pip python3-pytest-cov python3-rosdep python3-setuptools python3-vcstool wget
+sudo apt install -y libbullet-dev python3-pip python3-pytest-cov ros-dev-tools
 python3 -m pip install -U argcomplete flake8-blind-except flake8-builtins flake8-class-newline flake8-comprehensions flake8-deprecated flake8-docstrings flake8-import-order flake8-quotes pytest-repeat pytest-rerunfailures pytest
 
 
