@@ -31,7 +31,7 @@ helpFunction()
 {
   echo "Usage: ./ros2_setup -r <ros2 distro>"
   echo ""
-  echo -e "  -r <ros2 distro>\tfoxy, galactic"
+  echo -e "  -r <ros2 distro>\tfoxy, galactic, humble"
   echo ""
   exit 1
 }
@@ -48,7 +48,7 @@ do
   esac
 done
 
-if [ "$ROS2_DISTRO" != "foxy" ] && [ "$ROS_DISTRO" != "galactic" ]; then 
+if [ "$ROS2_DISTRO" != "foxy" ] && [ "$ROS_DISTRO" != "galactic" ] && [ "$ROS_DISTRO" != "humble" ]; then 
   echo -e "\033[1;31mInvalid ROS2 version.\033[0m"
   exit 1
 fi
@@ -62,7 +62,7 @@ fi
 echo -e "\033[1;31mStarting PC setup ...\033[0m"
 sudo apt update
 sudo apt upgrade -y
-sudo apt install -y ssh net-tools terminator chrony ntpdate curl vim git
+sudo apt install -y ssh net-tools terminator ntpdate curl vim git
 sudo ntpdate ntp.ubuntu.com
 
 
@@ -81,9 +81,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 
 
 # Install development tools and ROS2 tools
-sudo apt install -y libbullet-dev python3-pip python3-pytest-cov ros-dev-tools
-python3 -m pip install -U argcomplete flake8-blind-except flake8-builtins flake8-class-newline flake8-comprehensions flake8-deprecated flake8-docstrings flake8-import-order flake8-quotes pytest-repeat pytest-rerunfailures pytest
-
+sudo apt install -y python3-flake8-docstrings python3-pip python3-pytest-cov ros-dev-tools
 
 # Install ROS2
 echo -e "\033[1;31mStarting ROS2 $ROS2_DISTRO installation ...\033[0m"
@@ -117,37 +115,49 @@ if [ -f "/etc/ros/env.sh" ]; then
  sudo rm /etc/ros/env.sh
 fi
 
-echo -e "#!/bin/bash
+if [ "$ROS2_DISTRO" == "foxy" ] || [ "$ROS_DISTRO" != "galactic" ]; then 
+  echo -e "#!/bin/bash
 
-# Please write the ROS environment variables here
+  # Please write the ROS environment variables here
 
-export ROS_DISTRO=$ROS2_DISTRO
+  export ROS_DISTRO=$ROS2_DISTRO
 
-source /opt/ros/\$ROS_DISTRO/setup.bash
+  source /opt/ros/\$ROS_DISTRO/setup.bash
 
-if [ \"\$ROS_DISTRO\" = \"$ROS1_DISTRO\" ]; then
-  alias cw='cd ~/catkin_ws'
-  alias cs='cd ~/catkin_ws/src'
-  alias cm='cd ~/catkin_ws && catkin_make'
-  
-  source ~/catkin_ws/devel/setup.bash
-  export ROS_MASTER_URI=http://localhost:11311
+  if [ \"\$ROS_DISTRO\" = \"$ROS1_DISTRO\" ]; then
+    alias cw='cd ~/catkin_ws'
+    alias cs='cd ~/catkin_ws/src'
+    alias cm='cd ~/catkin_ws && catkin_make'
+
+    source ~/catkin_ws/devel/setup.bash
+    export ROS_MASTER_URI=http://localhost:11311
+  fi
+
+  if [ \"\$ROS_DISTRO\" = \"$ROS2_DISTRO\" ]; then
+    alias cw='cd ~/colcon_ws'
+    alias cs='cd ~/colcon_ws/src'
+    alias cb='cd ~/colcon_ws && colcon build --symlink-install'
+
+    source ~/colcon_ws/install/setup.bash
+    export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    export ROS_DOMAIN_ID=101
+  fi" >> $HOME/env.sh
 fi
 
-if [ \"\$ROS_DISTRO\" = \"$ROS2_DISTRO\" ]; then
+if [ "$ROS2_DISTRO" == "humble" ]; then 
+  echo -e "#!/bin/bash
+
+  # Please write the ROS environment variables here
+
+  source /opt/ros/$ROS2_DISTRO/setup.bash
+  source ~/colcon_ws/install/setup.bash
+
   alias cw='cd ~/colcon_ws'
   alias cs='cd ~/colcon_ws/src'
   alias cb='cd ~/colcon_ws && colcon build --symlink-install'
   
-  source ~/colcon_ws/install/setup.bash
   export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-  export ROS_DOMAIN_ID=101
-fi" >> $HOME/env.sh
+  export ROS_DOMAIN_ID=101" >> $HOME/env.sh
+fi
 
 sudo mv $HOME/env.sh /etc/ros/
-
-
-# Install RealSense SDK
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
-sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
-sudo apt install -y librealsense2-dkms librealsense2-utils
