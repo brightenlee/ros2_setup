@@ -48,12 +48,12 @@ do
   esac
 done
 
-if [ "$ROS2_DISTRO" != "foxy" ] && [ "$ROS_DISTRO" != "galactic" ] && [ "$ROS_DISTRO" != "humble" ]; then 
+if [ "$ROS2_DISTRO" != "foxy" ] && [ "$ROS2_DISTRO" != "galactic" ] && [ "$ROS2_DISTRO" != "humble" ]; then 
   echo -e "\033[1;31mInvalid ROS2 version.\033[0m"
   exit 1
 fi
 
-if [ "$ROS2_DISTRO" == "foxy" ] || [ "$ROS_DISTRO" != "galactic" ]; then 
+if [ "$ROS2_DISTRO" == "foxy" ] || [ "$ROS2_DISTRO" != "galactic" ]; then 
   ROS1_DISTRO="noetic"
 fi
 
@@ -115,49 +115,49 @@ if [ -f "/etc/ros/env.sh" ]; then
  sudo rm /etc/ros/env.sh
 fi
 
-if [ "$ROS2_DISTRO" == "foxy" ] || [ "$ROS_DISTRO" != "galactic" ]; then 
+if [ "$ROS2_DISTRO" == "foxy" ] || [ "$ROS2_DISTRO" == "galactic" ]; then 
   echo -e "#!/bin/bash
 
-  # Please write the ROS environment variables here
+# Please write the ROS environment variables here
 
-  export ROS_DISTRO=$ROS2_DISTRO
+export ROS_DISTRO=$ROS2_DISTRO
 
-  source /opt/ros/\$ROS_DISTRO/setup.bash
+source /opt/ros/\$ROS_DISTRO/setup.bash
 
-  if [ \"\$ROS_DISTRO\" = \"$ROS1_DISTRO\" ]; then
-    alias cw='cd ~/catkin_ws'
-    alias cs='cd ~/catkin_ws/src'
-    alias cm='cd ~/catkin_ws && catkin_make'
+if [ \"\$ROS_DISTRO\" = \"$ROS1_DISTRO\" ]; then
+  alias cw='cd ~/catkin_ws'
+  alias cs='cd ~/catkin_ws/src'
+  alias cm='cd ~/catkin_ws && catkin_make'
 
-    source ~/catkin_ws/devel/setup.bash
-    export ROS_MASTER_URI=http://localhost:11311
-  fi
+  source ~/catkin_ws/devel/setup.bash
+  export ROS_MASTER_URI=http://localhost:11311
+fi
 
-  if [ \"\$ROS_DISTRO\" = \"$ROS2_DISTRO\" ]; then
-    alias cw='cd ~/colcon_ws'
-    alias cs='cd ~/colcon_ws/src'
-    alias cb='cd ~/colcon_ws && colcon build --symlink-install'
+if [ \"\$ROS_DISTRO\" = \"$ROS2_DISTRO\" ]; then
+  alias cw='cd ~/colcon_ws'
+  alias cs='cd ~/colcon_ws/src'
+  alias cb='cd ~/colcon_ws && colcon build --symlink-install'
 
-    source ~/colcon_ws/install/setup.bash
-    export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-    export ROS_DOMAIN_ID=101
-  fi" >> $HOME/env.sh
+  source ~/colcon_ws/install/setup.bash
+  export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+  export ROS_DOMAIN_ID=101
+fi" >> $HOME/env.sh
 fi
 
 if [ "$ROS2_DISTRO" == "humble" ]; then 
   echo -e "#!/bin/bash
 
-  # Please write the ROS environment variables here
+# Please write the ROS environment variables here
 
-  source /opt/ros/$ROS2_DISTRO/setup.bash
-  source ~/colcon_ws/install/setup.bash
+source /opt/ros/$ROS2_DISTRO/setup.bash
+source ~/colcon_ws/install/setup.bash
 
-  alias cw='cd ~/colcon_ws'
-  alias cs='cd ~/colcon_ws/src'
-  alias cb='cd ~/colcon_ws && colcon build --symlink-install'
+alias cw='cd ~/colcon_ws'
+alias cs='cd ~/colcon_ws/src'
+alias cb='cd ~/colcon_ws && colcon build --symlink-install'
   
-  export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-  export ROS_DOMAIN_ID=101" >> $HOME/env.sh
+export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+export ROS_DOMAIN_ID=101" >> $HOME/env.sh
 fi
 
 sudo mv $HOME/env.sh /etc/ros/
