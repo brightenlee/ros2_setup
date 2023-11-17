@@ -73,7 +73,7 @@ export LANG=en_US.UTF-8
 echo -e "\033[1;31mInstall ROS2 $ROS2_DISTRO.\033[0m"
 
 sudo apt install -y software-properties-common
-sudo add-apt-repository universe
+echo -ne '\n' | sudo add-apt-repository universe
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list >/dev/null
 sudo apt update
