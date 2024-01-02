@@ -77,7 +77,7 @@ echo -ne '\n' | sudo add-apt-repository universe
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list >/dev/null
 sudo apt update
-sudo apt install -y ros-$ROS2_DISTRO-desktop-full python3-rosdep python3-colcon-common-extensions ros-$ROS2_DISTRO-rqt* ros-$ROS2_DISTRO-ros2-control ros-$ROS2_DISTRO-ros2-controllers ros-$ROS2_DISTRO-navigation2
+sudo apt install -y ros-$ROS2_DISTRO-desktop python3-rosdep python3-colcon-common-extensions ros-$ROS2_DISTRO-rqt* ros-$ROS2_DISTRO-ros2-control ros-$ROS2_DISTRO-ros2-controllers ros-$ROS2_DISTRO-navigation2
 
 source /opt/ros/$ROS2_DISTRO/setup.bash
 
